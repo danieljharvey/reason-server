@@ -1,18 +1,15 @@
-# Basic Reason Template
+# reason-server
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+### Starting ReasonML compile
 
-# Build
-```
-npm run build
-```
+`npm start`
 
-# Build + Watch
+### Starting server
 
-```
-npm run watch
-```
+`npm run server:dev` - runs server in nodemon to automatically restart on file changes
 
+`npm run server:start` - runs server without that
 
-# Editor
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+### Notes
+
+Installing dependencies with yarn seems to do weird stuff so advise sticking to npm
