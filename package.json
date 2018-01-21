@@ -1,0 +1,26 @@
+{
+  "name": "reason-server",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "server:dev": "nodemon ./src/index.bs.js",
+    "server:start": "node ./src/index.bs.js"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^2.1.0"
+  },
+  "dependencies": {
+    "bs-express": "0.0.6",
+    "bs-mysql": "^0.1.4",
+    "express": "^4.16.2",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.14.11"
+  }
+}
