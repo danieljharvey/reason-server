@@ -44,14 +44,18 @@ let conn =
     ()
   );
 
-Mysql.query(conn, "SHOW DATABASES", (error, results, fields) =>
-  switch (Js.Nullable.to_opt(error)) {
-  | None =>
-    Js.log(results);
-    Js.log(fields);
-  | Some(error) => Js.log(error##message)
-  }
-);
+let fetchLevel = (levelID) => {
+    Mysql.query(conn, "SELECT * FROM levels WHERE levelID=1", (error, results, fields) =>
+      switch (Js.Nullable.to_opt(error)) {
+      | None =>
+        Js.log(results);
+        Js.log(fields);
+      | Some(error) => Js.log(error##message)
+      }
+    );
+};
+
+fetchLevel(1);
 
 Mysql.endConnection(conn);
 

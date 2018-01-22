@@ -91,16 +91,21 @@ List.map((function (x) {
 
 var conn = Mysql.createConnection(/* Some */["127.0.0.1"], /* Some */[3306], /* Some */["helloegg"], /* Some */["niceegg"], /* Some */["itistheegg"], /* () */0);
 
-conn.query("SHOW DATABASES", (function (error, results, fields) {
-        if (error == null) {
-          console.log(results);
-          console.log(fields);
-          return /* () */0;
-        } else {
-          console.log(error.message);
-          return /* () */0;
-        }
-      }));
+function fetchLevel() {
+  conn.query("SELECT * FROM levels WHERE levelID=1", (function (error, results, fields) {
+          if (error == null) {
+            console.log(results);
+            console.log(fields);
+            return /* () */0;
+          } else {
+            console.log(error.message);
+            return /* () */0;
+          }
+        }));
+  return /* () */0;
+}
+
+fetchLevel(1);
 
 conn.end();
 
@@ -248,6 +253,7 @@ exports.doubleList       = doubleList;
 exports.doubleMap        = doubleMap;
 exports.newList          = newList;
 exports.conn             = conn;
+exports.fetchLevel       = fetchLevel;
 exports.plop             = plop;
 exports.checkProperty    = checkProperty;
 exports.checkProperties  = checkProperties;
