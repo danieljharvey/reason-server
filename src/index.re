@@ -34,6 +34,20 @@ let newList = doubleMap(listFace);
 
 List.map(x => Js.log(Array.of_list(x)), newList);
 
+/*
+ let getOverTwo = x =>
+   switch (x) {
+   | (x < 5) => None
+   | x => Some x
+   };
+ */
+/*
+ let thing1 = getOverTwo(1);
+
+ let thing2 = getOverTwo(7);
+
+ let thing3 = thing1.map(double);
+ */
 let conn =
   Mysql.createConnection(
     ~host="127.0.0.1",
@@ -44,18 +58,23 @@ let conn =
     ()
   );
 
-let fetchLevel = (levelID) => {
-    Mysql.query(conn, "SELECT * FROM levels WHERE levelID=1", (error, results, fields) =>
-      switch (Js.Nullable.to_opt(error)) {
-      | None =>
-        Js.log(results);
-        Js.log(fields);
-      | Some(error) => Js.log(error##message)
-      }
-    );
-};
+let fetchLevel = levelID =>
+  Mysql.query(
+    conn,
+    "SELECT * FROM levels WHERE levelID=1",
+    levelID,
+    (error, results, fields) =>
+    switch (Js.Nullable.to_opt(error)) {
+    | None =>
+      Js.log(results);
+      Js.log(fields);
+    | Some(error) => Js.log(error##message)
+    }
+  );
 
-fetchLevel(1);
+let levelID = 1;
+
+let result = fetchLevel(levelID);
 
 Mysql.endConnection(conn);
 
