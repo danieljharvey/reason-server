@@ -1,96 +1,44 @@
-Js.log("Hello, BuckleScript and Reason!");
-
-type thingFace =
-  | NoFace
-  | SomeFace(string);
-
-let slop1 = NoFace;
-
-let slop2 = SomeFace("Plumbum");
-
-let greeting = person =>
-  switch person {
-  | NoFace => "No fucking idea pal"
-  | SomeFace(name) => "Oh it's that prick " ++ name
-  };
-
-let slopName1 = greeting(slop1);
-
-let slopName2 = greeting(slop2);
-
-Js.log("Hello " ++ slopName1);
-
-Js.log("And also hello to " ++ slopName2);
-
-let listFace = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-
-let double = x => x * 2;
-
-let doubleList = List.map(double);
-
-let doubleMap = List.map(doubleList);
-
-let newList = doubleMap(listFace);
-
-List.map(x => Js.log(Array.of_list(x)), newList);
-
-/*
- let getOverTwo = x =>
-   switch (x) {
-   | (x < 5) => None
-   | x => Some x
-   };
- */
-/*
- let thing1 = getOverTwo(1);
-
- let thing2 = getOverTwo(7);
-
- let thing3 = thing1.map(double);
- */
 let conn =
-  Mysql.createConnection(
+  MySql.Connection.make(
     ~host="127.0.0.1",
     ~port=3306,
-    ~user="helloegg",
-    ~password="niceegg",
-    ~database="itistheegg",
+    ~database="",
+    ~user="",
+    ~password="",
     ()
   );
 
-let fetchLevel = levelID =>
-  Mysql.query(
-    conn,
-    "SELECT * FROM levels WHERE levelID=1",
-    levelID,
-    (error, results, fields) =>
-    switch (Js.Nullable.to_opt(error)) {
-    | None =>
-      Js.log(results);
-      Js.log(fields);
-    | Some(error) => Js.log(error##message)
-    }
-  );
+/*
+ MySql.Query.with_params(conn, "SELECT 1 + ? + ? as result", [|5, 6|], result =>
+   switch result {
+   | Error(e) => Js.log2("ERROR: ", e)
+   | Mutation(m) => Js.log2("MUTATION: ", m)
+   | Select(s) => Js.log2("SELECT: ", s)
+   }
+ );*/
+type result('a, 'b) =
+  | Error('a)
+  | Ok('b);
 
-let levelID = 1;
+let queryCallback = (result: Response.response) =>
+  switch result {
+  | Error(e) => Error(e)
+  | Mutation(m) => Error(m)
+  | Select(s) => Ok(s)
+  };
 
-let result = fetchLevel(levelID);
+let queryNamedParams = (conn, sql, params, callback) =>
+  MySql.Query.with_named_params(conn, sql, params, callback);
 
-Mysql.endConnection(conn);
-
-let plop = () => Js.log("plop");
+queryNamedParams(
+  conn,
+  "SELECT * FROM scores WHERE levelID=:levelID",
+  {"levelID": 10},
+  queryCallback
+);
 
 open Express;
 
-/* The tests below relies upon the ability to store in the Request
-      objects abritrary JSON properties.
-      Each middleware will both check that previous middleware
-      have been called by making properties exists in the Request object and
-      upon success will themselves adds another property to the Request.
-   */
-/* [checkProperty req next property k] makes sure [property] is
-   present in [req]. If success then [k()] is invoked, otherwise
-   [Next.route] is called with next */
 let checkProperty = (req, next, property, k) => {
   let reqData = Request.asJsonObject(req);
   switch (Js.Dict.get(reqData, property)) {
@@ -156,7 +104,9 @@ let makeCantFindJson = i => {
 let app = express();
 
 App.get(app, ~path="/") @@
-Middleware.from((req, res, next) => Response.sendJson(res, makeSuccessJson()));
+Middleware.from((_req, res, _next) =>
+  Response.sendJson(res, makeSuccessJson())
+);
 
 App.getWithMany(
   app,
